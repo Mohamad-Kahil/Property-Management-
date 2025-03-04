@@ -34,6 +34,7 @@ interface SidebarProps {
   userEmail?: string;
   userAvatar?: string;
   activePath?: string;
+  onNavigate?: (path: string) => void;
 }
 
 const Sidebar = ({
@@ -42,10 +43,11 @@ const Sidebar = ({
   onToggle = () => {},
   onThemeToggle = () => {},
   isDarkMode = false,
-  userName = "John Doe",
-  userEmail = "john.doe@example.com",
-  userAvatar = "",
+  userName = "Thomas Fleming",
+  userEmail = "info@example.com",
+  userAvatar = "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
   activePath = "/",
+  onNavigate = () => {},
 }: SidebarProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
@@ -76,6 +78,13 @@ const Sidebar = ({
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const handleNavigation = (path: string) => {
+    onNavigate(path);
+    if (isMobileMenuOpen) {
+      setIsMobileMenuOpen(false);
+    }
   };
 
   return (
@@ -133,10 +142,10 @@ const Sidebar = ({
           <ul className="space-y-1 px-2">
             {navItems.map((item) => (
               <li key={item.path}>
-                <a
-                  href={item.path}
+                <button
+                  onClick={() => handleNavigation(item.path)}
                   className={cn(
-                    "flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                    "flex items-center w-full rounded-md px-3 py-2 text-sm font-medium transition-colors",
                     activePath === item.path
                       ? "bg-accent text-accent-foreground"
                       : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
@@ -145,7 +154,7 @@ const Sidebar = ({
                 >
                   {item.icon}
                   {!collapsed && <span className="ml-3">{item.label}</span>}
-                </a>
+                </button>
               </li>
             ))}
           </ul>
